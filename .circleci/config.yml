@@ -1,0 +1,79 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:18.17.0
+    working_directory: ~/repo
+
+jobs:
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      
+      - run:
+          name: Install dependencies
+          command: npm ci
+      
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      
+      # Run tests with coverage and generate lcov.info
+      - run:
+          name: Run tests with coverage
+          command: |
+            npm run test:ci
+            echo "Test execution completed"
+            echo "lcov.info generated at coverage/lcov.info"
+      
+      # Generate test report
+      - run:
+          name: Generate test report
+          command: |
+            npm run test:report
+            echo "Test report generated"
+      
+      # Store test results for CircleCI Test Summary
+      - store_test_results:
+          path: test-results
+      
+      # Store coverage report as artifact
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+      
+      # Store lcov.info specifically as artifact
+      - store_artifacts:
+          path: coverage/lcov.info
+          destination: lcov.info
+      
+      # Store test report as artifact
+      - store_artifacts:
+          path: test-results
+          destination: test-results
+      
+      # Store HTML test report as artifact
+      - store_artifacts:
+          path: test-report
+          destination: test-report
+
+workflows:
+  version: 2
+  test_workflow:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: /.*/

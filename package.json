@@ -1,0 +1,25 @@
+{
+  "name": "circle-ci-test",
+  "version": "1.0.0",
+  "description": "Sample project with Jest tests and CircleCI integration",
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
+    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
+    "test:ci": "NODE_OPTIONS='--experimental-vm-modules' jest --ci --coverage --maxWorkers=2",
+    "test:report": "NODE_OPTIONS='--experimental-vm-modules' jest --reporters=jest-html-reporters --reporters=jest-junit"
+  },
+  "keywords": [
+    "jest",
+    "testing",
+    "circleci"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-html-reporters": "^3.1.4",
+    "jest-junit": "^16.0.0"
+  }
+}
