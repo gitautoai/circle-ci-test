@@ -12,6 +12,7 @@ coverage/
 test-results/
 test-report/
 jest_html_reporters.html
+jest-html-reporters-attach/
 
 # Runtime data
 pids
